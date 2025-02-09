@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Left Bar for Profile Icon */
+        .left-bar {
+            width: 100px;
+            background-color: #0288d1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .left-bar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .right-bar {
+            width: 250px;
+            background-color: #0288d1;
+            padding: 20px;
+            color: white;
+        }
+
+        .top-bar {
+            background-color: #0288d1;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        select, button, input {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .recent-searches, .suggested-places, .planned-trips {
+            margin-top: 20px;
+        }
+
+        .recent-searches img, .suggested-places img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .recent-searches ul, .suggested-places ul, .planned-trips ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recent-searches li, .planned-trips li {
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0277bd;
+        }
+
+        /* Plan a Trip Button */
+        .plan-trip-btn {
+            display: block;
+            background-color: #ff9800;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .plan-trip-btn:hover {
+            background-color: #e68900;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Bar with Profile Icon -->
+        <div class="left-bar">
+            <a href="{{ url_for('profile') }}">
+                <img src="profile-pic.jpg" alt="Profile Icon"> <!-- Replace with dynamic image if needed -->
+            </a>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="top-bar">
+                Welcome, {{ session['username'] }}
+            </div>
+
+            <!-- Search Bar with State Dropdown -->
+            <form method="POST">
+                <select name="state">
+                    <option value="">--Choose a State--</option>
+                    {% for state in states %}
+                        <option value="{{ state }}">{{ state }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Search</button>
+            </form>
+
+            <!-- Recent Searches -->
+            <div class="recent-searches">
+                <h3>Recent Searches</h3>
+                {% if recent_searches %}
+                    {% for search in recent_searches %}
+                        <div class="recent-searches">
+                            <p><strong>{{ search['query'] }}</strong></p>
+                            <img src="{{ search['image_url'] }}" alt="Search Image">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No recent searches yet.</p>
+                {% endif %}
+            </div>
+
+            <!-- Suggested Places -->
+            <div class="suggested-places">
+                <h3>Suggested Places</h3>
+                {% if suggested_places %}
+                    {% for place in suggested_places %}
+                        <div>
+                            <p><strong>{{ place['name'] }}</strong></p>
+                            <img src="{{ place['image_url'] }}" alt="{{ place['name'] }}">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No suggested places available.</p>
+                {% endif %}
+            </div>
+
+            <!-- Planned Trips -->
+            <div class="planned-trips">
+                <h3>Your Planned Trips</h3>
+                {% if planned_trips %}
+                    <ul>
+                        {% for trip in planned_trips %}
+                            <li>
+                                <strong>Destination:</strong> {{ trip['destination'] }}<br>
+                                <strong>Dates:</strong> {{ trip['start_date'] }} - {{ trip['end_date'] }}<br>
+                                <strong>Transport:</strong> {{ trip['transport'] }}<br>
+                                
+                                <strong>Budget:</strong> ₹{{ trip['budget'] }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No planned trips yet.</p>
+                {% endif %}
+            </div>
+
+            <!-- Plan a Trip Button -->
+            <a href="{{ url_for('plan_trip') }}" class="plan-trip-btn">🗺️ Plan a Trip</a>
+
+        </div>
+
+        <!-- Right Bar for Room Creation and Joining -->
+        <div class="right-bar">
+            <h3>Create a New Room</h3>
+            <button onclick="createRoom()">➕ Create Room</button>
+            <p id="roomMessage"></p>
+
+            <h3>Join an Existing Room</h3>
+            <input type="text" id="joinRoomId" placeholder="Enter Room ID">
+            <button onclick="joinRoom()">🔗 Join Room</button>
+            <p id="joinRoomMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to create a room
+        function createRoom() {
+            fetch("/create_room", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.room_id) {
+                    document.getElementById("roomMessage").innerHTML = 
+                        "✅ Room Created! Share this ID: <strong>" + data.room_id + "</strong>";
+                } else {
+                    document.getElementById("roomMessage").innerHTML = "❌ Error creating room.";
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        // Function to join a room
+        function joinRoom() {
+            let roomId = document.getElementById("joinRoomId").value;
+
+            fetch("/join_room", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ room_id: roomId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("joinRoomMessage").innerHTML =
+                        "✅ Joined Room: <strong>" + roomId + "</strong>";
+                } else {
+                    document.getElementById("joinRoomMessage").innerHTML =
+                        "❌ " + data.error;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+
+</body>
+</html>

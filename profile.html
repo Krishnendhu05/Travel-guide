@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-header img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 3px solid #0288d1;
+            margin-bottom: 15px;
+        }
+
+        .profile-info {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .profile-info p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #0288d1;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background-color: #0277bd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-header">
+            <!-- Load profile picture dynamically (default to 'default.jpg' if none is provided) -->
+            <img src="{{ user['profile_pic'] or url_for('static', filename='images/default.jpg') }}" alt="Profile Picture">
+            <h2>{{ user['username'] }}</h2>
+        </div>
+        
+        <div class="profile-info">
+           
+            <p><strong>Country:</strong> {{ user['country'] }}</p>
+            <p><strong>State:</strong> {{ user['state'] }}</p>
+            <p><strong>Sex:</strong> {{ user['sex'] }}</p>
+        </div>
+        
+        <a href="{{ url_for('dashboard') }}" class="back-button">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #63b0e4;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Container for the form */
+.container {
+    background: hsl(203, 31%, 95%);
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    margin: auto;
+    box-shadow: 0px 0px 10px 0px #aaa;
+}
+
+/* Form styling */
+.plan-trip-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Input groups to align labels and inputs properly */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 90%;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+    width: 100%;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Button styling */
+button {
+    background-color: #0288d1;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0277bd;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #ff9800;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #e68900;
+}
+
+/* Chat Box */
+.chat-box {
+    background: #e9e9e9;
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+    text-align: left;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0288d1;
+    color: white;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+}
+
+
